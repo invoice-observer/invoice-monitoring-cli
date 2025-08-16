@@ -49,7 +49,32 @@ namespace InvoiceMonitoringCli.Services
                     {
                         var body = ea.Body.ToArray();
 
+                        var messageRaw = System.Text.Encoding.UTF8.GetString(body);
+                        var routingKey = ea.RoutingKey;
 
+                        string formattedMessage;
+                        try
+                        {
+                            var jsonObj = System.Text.Json.JsonDocument.Parse(messageRaw);
+                            formattedMessage = System.Text.Json.JsonSerializer.Serialize(
+                                jsonObj,
+#pragma warning disable CA1869
+                                new System.Text.Json.JsonSerializerOptions
+#pragma warning restore CA1869
+                                {
+                                    WriteIndented = true
+                                });
+
+                            logger.LogInformation("Received JSON message:\n      Routing key: {RoutingKey}\n      Message: {FormattedJson}",
+                                routingKey, formattedMessage);
+                        }
+                        catch (System.Text.Json.JsonException)
+                        {
+                            // Not valid JSON, log as plain text
+                            formattedMessage = messageRaw;
+                            logger.LogInformation("Received non-JSON message with routing key: {RoutingKey}, Content: {MessageContent}",
+                                routingKey, messageRaw);
+                        }
                         await _channel.BasicAckAsync(ea.DeliveryTag, false, cancellationToken);
 //                      await _channel.BasicNackAsync(ea.DeliveryTag, false, true, cancellationToken);
                     }
