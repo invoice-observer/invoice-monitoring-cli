@@ -13,10 +13,10 @@ var builder = Host.CreateDefaultBuilder(args)
     })
     .ConfigureServices((context, services) =>
     {
-        services.Configure<RabbitMQConfiguration>(
+        services.Configure<RabbitMqConfiguration>(
             context.Configuration.GetSection("RabbitMQ"));
             
-        services.AddHostedService<RabbitMQConsumerService>();
+        services.AddHostedService<RabbitMqConsumerService>();
     });
 
 using var host = builder.Build();

@@ -3,20 +3,15 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
-using System;
-using System.Data.Common;
-using System.Threading;
-using System.Threading.Channels;
-using System.Threading.Tasks;
 
 namespace InvoiceMonitoringCli.Services
 {
-    public class RabbitMQConsumerService(
-        ILogger<RabbitMQConsumerService> logger,
-        IOptions<RabbitMQConfiguration> rmqConfig)
+    public class RabbitMqConsumerService(
+        ILogger<RabbitMqConsumerService> logger,
+        IOptions<RabbitMqConfiguration> rmqConfig)
         : BackgroundService
     {
-        private readonly RabbitMQConfiguration _rmqConfig = rmqConfig.Value;
+        private readonly RabbitMqConfiguration _rmqConfig = rmqConfig.Value;
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
@@ -24,24 +19,18 @@ namespace InvoiceMonitoringCli.Services
 
             try
             {
-                // Here you would connect to CloudAMQP using the connection string
-                // For example:
-                // var factory = new ConnectionFactory { Uri = new Uri(_rmqConfig.ConnectionString) };
-
                 var factory = new ConnectionFactory
                 {
                     Uri = new Uri(_rmqConfig.ConnectionString)
                 };
 
-
-                logger.LogInformation("Connected to CloudAMQP, queue: {QueueName}", _rmqConfig.QueueName);
-
-                // Create new connection and channel...
                 await using var connection = await factory.CreateConnectionAsync(cancellationToken);
                 await using var channel = await connection.CreateChannelAsync(null, cancellationToken);
 
+                logger.LogInformation("Connected to CloudAMQP, queue: {QueueName}", _rmqConfig.QueueName);
 
-                // Simulate connection and consumption
+
+                // Mock message processing loop
                 while (!cancellationToken.IsCancellationRequested)
                 {
                     logger.LogInformation("Waiting for messages...");
