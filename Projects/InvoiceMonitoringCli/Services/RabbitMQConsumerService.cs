@@ -33,7 +33,7 @@ namespace InvoiceMonitoringCli.Services
                 _connection = await factory.CreateConnectionAsync(cancellationToken);
                 _channel = await _connection.CreateChannelAsync(null, cancellationToken);
 
-                logger.LogInformation("Connected to CloudAMQP, queue: {QueueName}", _rmqConfig.QueueName);
+                logger.LogInformation("Connecting to CloudAMQP, queue: {QueueName}", _rmqConfig.QueueName);
 
                 await _channel.QueueDeclareAsync(
                     queue: _rmqConfig.QueueName,
@@ -48,32 +48,19 @@ namespace InvoiceMonitoringCli.Services
                     try
                     {
                         var body = ea.Body.ToArray();
-
-                        var messageRaw = System.Text.Encoding.UTF8.GetString(body);
                         var routingKey = ea.RoutingKey;
 
-                        string formattedMessage;
-                        try
+                        var (formattedMessage, isJson) = FormatMessageAsJsonOrText(System.Text.Encoding.UTF8.GetString(body));
+                        // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+                        if (isJson)
                         {
-                            var jsonObj = System.Text.Json.JsonDocument.Parse(messageRaw);
-                            formattedMessage = System.Text.Json.JsonSerializer.Serialize(
-                                jsonObj,
-#pragma warning disable CA1869
-                                new System.Text.Json.JsonSerializerOptions
-#pragma warning restore CA1869
-                                {
-                                    WriteIndented = true
-                                });
-
                             logger.LogInformation("Received JSON message:\n      Routing key: {RoutingKey}\n      Message: {FormattedJson}",
                                 routingKey, formattedMessage);
                         }
-                        catch (System.Text.Json.JsonException)
+                        else
                         {
-                            // Not valid JSON, log as plain text
-                            formattedMessage = messageRaw;
-                            logger.LogInformation("Received non-JSON message with routing key: {RoutingKey}, Content: {MessageContent}",
-                                routingKey, messageRaw);
+                            logger.LogInformation("Received unexpected non-JSON message with routing key: {RoutingKey}, Content: {MessageContent}",
+                                routingKey, formattedMessage);
                         }
                         await _channel.BasicAckAsync(ea.DeliveryTag, false, cancellationToken);
 //                      await _channel.BasicNackAsync(ea.DeliveryTag, false, true, cancellationToken);
@@ -91,6 +78,8 @@ namespace InvoiceMonitoringCli.Services
                     consumer: consumer,
                     cancellationToken: cancellationToken);
 
+                logger.LogInformation("CloudAMQP connection initialized successfully");
+
                 await Task.Delay(Timeout.Infinite, cancellationToken);
             }
             catch (OperationCanceledException)
@@ -104,6 +93,34 @@ namespace InvoiceMonitoringCli.Services
             finally
             {
                 logger.LogInformation("CloudAMQP Consumer Service stopping...");
+            }
+        }
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            logger.LogInformation("Disposing a connected to CloudAMQP (queue: {QueueName})", _rmqConfig.QueueName);
+            _channel?.Dispose();
+            _connection?.Dispose();
+            await base.StopAsync(cancellationToken);
+        }
+
+        private static (string formattedMessage, bool isJson) FormatMessageAsJsonOrText(string messageRaw)
+        {
+            try
+            {
+                var jsonObj = System.Text.Json.JsonDocument.Parse(messageRaw);
+                var formattedMessage = System.Text.Json.JsonSerializer.Serialize(
+                    jsonObj,
+#pragma warning disable CA1869
+                    new System.Text.Json.JsonSerializerOptions
+#pragma warning restore CA1869
+                    {
+                        WriteIndented = true
+                    });
+                return (formattedMessage, true);
+            }
+            catch (System.Text.Json.JsonException)
+            {
+                return (messageRaw, false);
             }
         }
     }
