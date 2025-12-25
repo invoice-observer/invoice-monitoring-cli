@@ -1,11 +1,11 @@
-# Invoice Monitoring CLI
+# Invoice Observer / Invoice Monitoring
 
-Part of the Invoice Core System, the overall README here: [Invoice Core System](https://github.com/e-danz/invoice-core-app.git)
+Part of the Invoice Core System, the overall README here: [Invoice Core System](https://invoice-observer/invoice-core-app.git)
 
 ## Overview
 
-Invoice monitoring console application built with .NET 8, implementing CloudAMQP message consumption
-for invoice processing events, see the accompanying [Invoice Core Application](https://github.com/e-danz/invoice-core-app.git)
+A monitoring CLI that subscribes Invoice Core events, published on RabbitMQ, see
+the accompanying [Invoice Core Application](https://github.com/invoice-observer/invoice-core-app.git)
 
 ## Key Features
 
@@ -58,4 +58,4 @@ dotnet run
 
 ## Related Projects
 
-Works together with [Invoice Core Application](https://github.com/e-danz/invoice-core-app.git) which produces the messages consumed by this service.
+Works together with [Invoice Core](https://github.com/invoice-observer/invoice-core-app.git) which publishes the messages consumed by this service.
