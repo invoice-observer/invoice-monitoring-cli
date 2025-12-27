@@ -1,6 +1,6 @@
-# Invoice Observer / Invoice Monitoring
+# Invoice Observer: Invoice Monitoring
 
-Part of the Invoice Core System, the overall README here: [Invoice Core System](https://invoice-observer/invoice-core-app.git)
+Part of the Invoice Observer application, the overall README here: [Invoice Observer and Invoice Core)](https://invoice-observer/invoice-core-app.git)
 
 ## Overview
 
@@ -29,9 +29,9 @@ Supported routing keys:
 - `invoice.updated` - Invoice modification events  
 - `invoice.deleted` - Invoice removal events
 
-## Development
+## Development Environment
 
-### Requirements
+### Technologies Used
 
 - .NET 8 SDK
 - CloudAMQP account (or local RabbitMQ instance)
