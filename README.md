@@ -1,6 +1,6 @@
 # Invoice Observer: Invoice Monitoring
 
-Part of the Invoice Observer application, the overall README here: [Invoice Observer and Invoice Core)](https://invoice-observer/invoice-core-app.git)
+Part of the Invoice Observer application, the overall README here: [Invoice Observer and Invoice Core)](https://github.com/invoice-observer/invoice-core-app/blob/main/README.md)
 
 ## Overview
 
