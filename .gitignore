@@ -64,3 +64,5 @@ nunit-*.xml
 **/.vs/*
 
 Invoices.db*
+
+*.DotSettings.user
