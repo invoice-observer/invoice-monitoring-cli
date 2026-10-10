@@ -28,7 +28,9 @@ namespace InvoiceMonitoringCli.Services
                 // Create new factory, connection and channel...
                 var factory = new ConnectionFactory
                 {
-                    Uri = new Uri(_rmqConfig.ConnectionString)
+                    Uri = new Uri(_rmqConfig.ConnectionString),
+                    UserName = _rmqConfig.UserName,
+                    Password = _rmqConfig.UserPassword
                 };
                 _connection = await factory.CreateConnectionAsync(cancellationToken);
                 _channel = await _connection.CreateChannelAsync(null, cancellationToken);
