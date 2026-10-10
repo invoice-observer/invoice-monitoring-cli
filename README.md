@@ -69,6 +69,10 @@ so no URI escaping of special characters is needed and the password never appear
   ```
   dotnet user-secrets set "RabbitMQ:UserPassword" "<password>" --project Projects/InvoiceMonitoringCli
   ```
+  User secrets are only loaded when `DOTNET_ENVIRONMENT=Development` (set it in your shell or run configuration), e.g.:
+  ```
+  $env:DOTNET_ENVIRONMENT="Development"; dotnet run --project Projects/InvoiceMonitoringCli
+  ```
 - Production: environment variable `RabbitMQ__UserPassword` (or a Key Vault / Kubernetes secret mapped to it).
 
 Use `amqps://` (TLS) outside of local development and a dedicated least-privilege broker user per service.

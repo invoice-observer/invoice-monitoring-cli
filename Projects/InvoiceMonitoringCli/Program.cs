@@ -10,6 +10,10 @@ var builder = Host.CreateDefaultBuilder(args)
     {
         config.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false, reloadOnChange: true);
         config.AddEnvironmentVariables();
+        if (hostingContext.HostingEnvironment.IsDevelopment())
+        {
+            config.AddUserSecrets<Program>();
+        }
     })
     .ConfigureServices((context, services) =>
     {
