@@ -53,7 +53,16 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 
+# Rider / JetBrains
+.idea/*                                                                                                                                                                 │ 58 +*.suo                                                                               
+!.idea/.idea.InvoiceMonitoringCli/                                                                                                                                            │ 59 +*.userprefs                                                                         
+.idea/.idea.InvoiceMonitoringCli/*                                                                                                                                            │ 60 +*.DotSettings.user                                                                  
+!.idea/.idea.InvoiceMonitoringCli/.idea/                                                                                                                                      │ 61 +                                                                                    
+.idea/.idea.InvoiceMonitoringCli/.idea/*
+                     
 **/wwwroot/lib/*
 **/.vs/*
 
 Invoices.db*
+
+*.DotSettings.user

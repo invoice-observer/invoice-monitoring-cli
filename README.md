@@ -50,11 +50,32 @@ dotnet run
 ```json
 {
   "RabbitMQ": {
-    "ConnectionString": "amqps://username:password@hostname/vhost",
+    "ConnectionString": "amqps://hostname/vhost",
+    "UserName": "username",
+    "UserPassword": "",
     "QueueName": "invoices"
   }
 }
 ```
+
+### RabbitMQ Configuration and Secrets
+
+The `RabbitMQ` section of `appsettings.json` holds only non-secret values: the broker URI **without credentials**
+(`amqps://host/vhost`), `UserName` and the queue name. The `UserPassword` is never committed;
+it is supplied through the standard configuration providers and set on the `ConnectionFactory` directly,
+so no URI escaping of special characters is needed and the password never appears in a string that could be logged.
+
+- Development (User Secrets):
+  ```
+  dotnet user-secrets set "RabbitMQ:UserPassword" "<password>" --project Projects/InvoiceMonitoringCli
+  ```
+  User secrets are only loaded when `DOTNET_ENVIRONMENT=Development` (set it in your shell or run configuration), e.g.:
+  ```
+  $env:DOTNET_ENVIRONMENT="Development"; dotnet run --project Projects/InvoiceMonitoringCli
+  ```
+- Production: environment variable `RabbitMQ__UserPassword` (or a Key Vault / Kubernetes secret mapped to it).
+
+Use `amqps://` (TLS) outside of local development and a dedicated least-privilege broker user per service.
 
 ## Related Projects
 
