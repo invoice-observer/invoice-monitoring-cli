@@ -1,26 +1,17 @@
-# Invoice Observer: Invoice Monitoring
+# Invoice Monitoring
 
-Part of the Invoice Observer application, the overall README here: [Invoice Observer and Invoice Core)](https://github.com/invoice-observer/invoice-core-app/blob/main/README.md)
+.NET console application that consumes the invoice events published on RabbitMQ by
+[Invoice Core](https://github.com/invoice-observer/invoice-core-app).
 
-## Overview
-
-A monitoring CLI that subscribes Invoice Core events, published on RabbitMQ, see
-the accompanying [Invoice Core Application](https://github.com/invoice-observer/invoice-core-app.git)
+Part of Invoice Observer System. For the overall system architecture, see the
+[Invoice Observer README](https://github.com/invoice-observer/.github/blob/main/profile/README.md).
 
 ## Key Features
 
 1. CloudAMQP message consumption with reliable acknowledgment.
 2. JSON message parsing and pretty-printing.
-3. Support for invoice event routing keys: added, updated, deleted. The updated and deleted don't come (never send by the message supplier)
-
-## System Architecture
-
-This application serves as the monitoring component for the Invoice Core Application:
-
-**Monitoring Application (.NET 8 Console)**
-- CloudAMQP queue consumer
-- Message processing and display functionality
-- Structured logging with configurable levels
+3. Support for invoice event routing keys: added, updated, deleted. Invoice Core currently publishes only `invoice.added`.
+4. Structured logging with configurable levels.
 
 ## Message Types
 
@@ -33,7 +24,7 @@ Supported routing keys:
 
 ### Technologies Used
 
-- .NET 8 SDK
+- .NET 10 SDK
 - CloudAMQP account (or local RabbitMQ instance)
 
 ### Getting Started
@@ -76,7 +67,3 @@ so no URI escaping of special characters is needed and the password never appear
 - Production: environment variable `RabbitMQ__UserPassword` (or a Key Vault / Kubernetes secret mapped to it).
 
 Use `amqps://` (TLS) outside of local development and a dedicated least-privilege broker user per service.
-
-## Related Projects
-
-Works together with [Invoice Core](https://github.com/invoice-observer/invoice-core-app.git) which publishes the messages consumed by this service.
