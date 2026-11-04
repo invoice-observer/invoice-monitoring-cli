@@ -10,7 +10,7 @@ Part of Invoice Observer System. For the overall system architecture, see the
 
 1. CloudAMQP message consumption with reliable acknowledgment.
 2. JSON message parsing and pretty-printing.
-3. Support for invoice event routing keys: added, updated, deleted. Invoice Core currently publishes only `invoice.added`.
+3. Support for invoice event routing keys: added, updated, deleted.
 4. Structured logging with configurable levels.
 
 ## Message Types
