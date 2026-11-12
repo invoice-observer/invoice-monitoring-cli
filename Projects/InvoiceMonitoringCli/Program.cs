@@ -9,6 +9,7 @@ var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((hostingContext, config) =>
     {
         config.AddJsonFile(Path.Combine(AppContext.BaseDirectory, "appsettings.json"), optional: false, reloadOnChange: true);
+        config.AddJsonFile(Path.Combine(AppContext.BaseDirectory, $"appsettings.{hostingContext.HostingEnvironment.EnvironmentName}.json"), optional: true, reloadOnChange: true);
         config.AddEnvironmentVariables();
         if (hostingContext.HostingEnvironment.IsDevelopment())
         {

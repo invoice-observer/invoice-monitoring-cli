@@ -49,7 +49,26 @@ dotnet run
 }
 ```
 
-### RabbitMQ Configuration and Secrets
+## Configuration and Secrets
+
+No credentials are committed.
+
+| Key                     | Purpose                              |
+|-------------------------|--------------------------------------|
+| `RabbitMQ:UserPassword` | RabbitMQ broker password (see below) |
+
+- Development (User Secrets, stored outside the repository):
+  ```
+  dotnet user-secrets set "RabbitMQ:UserPassword" "<password>" --project Projects/InvoiceMonitoringCli
+  ```
+  User secrets are only loaded when `DOTNET_ENVIRONMENT=Development`. `Properties/launchSettings.json` sets this
+  for `dotnet run` and the IDE:
+  ```
+  dotnet run --project Projects/InvoiceMonitoringCli
+  ```
+- Production: environment variable `RabbitMQ__UserPassword` (or a Key Vault / Kubernetes secret mapped to it).
+
+### RabbitMQ
 
 The `RabbitMQ` section of `appsettings.json` holds only non-secret values: the broker URI **without credentials**
 (`amqps://host/vhost`), `UserName` and the queue name. The `UserPassword` is never committed;
@@ -59,10 +78,6 @@ so no URI escaping of special characters is needed and the password never appear
 - Development (User Secrets):
   ```
   dotnet user-secrets set "RabbitMQ:UserPassword" "<password>" --project Projects/InvoiceMonitoringCli
-  ```
-  User secrets are only loaded when `DOTNET_ENVIRONMENT=Development` (set it in your shell or run configuration), e.g.:
-  ```
-  $env:DOTNET_ENVIRONMENT="Development"; dotnet run --project Projects/InvoiceMonitoringCli
   ```
 - Production: environment variable `RabbitMQ__UserPassword` (or a Key Vault / Kubernetes secret mapped to it).
 
