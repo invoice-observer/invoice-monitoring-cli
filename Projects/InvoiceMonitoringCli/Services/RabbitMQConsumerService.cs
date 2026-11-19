@@ -21,7 +21,7 @@ namespace InvoiceMonitoringCli.Services
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("CloudAMQP Consumer Service starting...");
+            logger.LogInformation("RabbitMQ Consumer Service starting...");
 
             try
             {
@@ -35,7 +35,7 @@ namespace InvoiceMonitoringCli.Services
                 _connection = await factory.CreateConnectionAsync(cancellationToken);
                 _channel = await _connection.CreateChannelAsync(null, cancellationToken);
 
-                logger.LogInformation("Connecting to CloudAMQP, queue: {QueueName}", _rmqConfig.QueueName);
+                logger.LogInformation("Connecting to RabbitMQ, queue: {QueueName}", _rmqConfig.QueueName);
 
                 await _channel.QueueDeclareAsync(
                     queue: _rmqConfig.QueueName,
@@ -80,7 +80,7 @@ namespace InvoiceMonitoringCli.Services
                     consumer: consumer,
                     cancellationToken: cancellationToken);
 
-                logger.LogInformation("CloudAMQP connection initialized successfully");
+                logger.LogInformation("RabbitMQ connection initialized successfully");
 
                 await Task.Delay(Timeout.Infinite, cancellationToken);
             }
@@ -90,16 +90,16 @@ namespace InvoiceMonitoringCli.Services
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error occurred in CloudAMQP Consumer Service");
+                logger.LogError(ex, "Error occurred in RabbitMQ Consumer Service");
             }
             finally
             {
-                logger.LogInformation("CloudAMQP Consumer Service stopping...");
+                logger.LogInformation("RabbitMQ Consumer Service stopping...");
             }
         }
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            logger.LogInformation("Disposing a connected to CloudAMQP (queue: {QueueName})", _rmqConfig.QueueName);
+            logger.LogInformation("Disposing a connected to RabbitMQ (queue: {QueueName})", _rmqConfig.QueueName);
             _channel?.Dispose();
             _connection?.Dispose();
             await base.StopAsync(cancellationToken);

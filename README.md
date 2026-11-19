@@ -8,7 +8,7 @@ Part of Invoice Observer System. For the overall system architecture, see the
 
 ## Key Features
 
-1. CloudAMQP message consumption with reliable acknowledgment.
+1. RabbitMQ message consumption with reliable acknowledgment.
 2. JSON message parsing and pretty-printing.
 3. Support for invoice event routing keys: added, updated, deleted.
 4. Structured logging with configurable levels.
@@ -25,12 +25,12 @@ Supported routing keys:
 ### Technologies Used
 
 - .NET 10 SDK
-- CloudAMQP account (or local RabbitMQ instance)
+- Local RabbitMQ instance (development) or CloudAMQP (production)
 
 ### Getting Started
 
 1. Clone the repository
-2. Configure CloudAMQP connection string in appsettings.json, if default is not suitable
+2. Adjust the broker URI in `appsettings.Development.json` (local RabbitMQ) or `appsettings.json` (CloudAMQP), if the defaults are not suitable
 3. Run the monitoring application
 ```bash
 dotnet run
@@ -49,7 +49,26 @@ dotnet run
 }
 ```
 
-### RabbitMQ Configuration and Secrets
+## Configuration and Secrets
+
+No credentials are committed.
+
+| Key                     | Purpose                              |
+|-------------------------|--------------------------------------|
+| `RabbitMQ:UserPassword` | RabbitMQ broker password (see below) |
+
+- Development (User Secrets, stored outside the repository):
+  ```
+  dotnet user-secrets set "RabbitMQ:UserPassword" "<password>" --project Projects/InvoiceMonitoringCli
+  ```
+  User secrets are only loaded when `DOTNET_ENVIRONMENT=Development`. `Properties/launchSettings.json` sets this
+  for `dotnet run` and the IDE:
+  ```
+  dotnet run --project Projects/InvoiceMonitoringCli
+  ```
+- Production: environment variable `RabbitMQ__UserPassword` (or a Key Vault / Kubernetes secret mapped to it).
+
+### RabbitMQ
 
 The `RabbitMQ` section of `appsettings.json` holds only non-secret values: the broker URI **without credentials**
 (`amqps://host/vhost`), `UserName` and the queue name. The `UserPassword` is never committed;
@@ -59,10 +78,6 @@ so no URI escaping of special characters is needed and the password never appear
 - Development (User Secrets):
   ```
   dotnet user-secrets set "RabbitMQ:UserPassword" "<password>" --project Projects/InvoiceMonitoringCli
-  ```
-  User secrets are only loaded when `DOTNET_ENVIRONMENT=Development` (set it in your shell or run configuration), e.g.:
-  ```
-  $env:DOTNET_ENVIRONMENT="Development"; dotnet run --project Projects/InvoiceMonitoringCli
   ```
 - Production: environment variable `RabbitMQ__UserPassword` (or a Key Vault / Kubernetes secret mapped to it).
 
