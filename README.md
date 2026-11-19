@@ -8,7 +8,7 @@ Part of Invoice Observer System. For the overall system architecture, see the
 
 ## Key Features
 
-1. CloudAMQP message consumption with reliable acknowledgment.
+1. RabbitMQ message consumption with reliable acknowledgment.
 2. JSON message parsing and pretty-printing.
 3. Support for invoice event routing keys: added, updated, deleted.
 4. Structured logging with configurable levels.
@@ -25,12 +25,12 @@ Supported routing keys:
 ### Technologies Used
 
 - .NET 10 SDK
-- CloudAMQP account (or local RabbitMQ instance)
+- Local RabbitMQ instance (development) or CloudAMQP (production)
 
 ### Getting Started
 
 1. Clone the repository
-2. Configure CloudAMQP connection string in appsettings.json, if default is not suitable
+2. Adjust the broker URI in `appsettings.Development.json` (local RabbitMQ) or `appsettings.json` (CloudAMQP), if the defaults are not suitable
 3. Run the monitoring application
 ```bash
 dotnet run
